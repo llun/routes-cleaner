@@ -1,44 +1,20 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { FC, useRef, useEffect } from "react";
-import mapboxgl from "mapbox-gl";
+
+import { RideMap, Streams } from "../libs/ride";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import styles from "../styles/Home.module.css";
 
-const MAPBOX_PUBLIC_KEY =
-  "pk.eyJ1IjoibGx1biIsImEiOiJja2FqN2k2djIwNDU5MnlvNjR4YXRrMzFsIn0.Oir7SYHkVKBlgbPHldtRGQ";
+import ride1 from "../data/netherlands/7648883160.json";
+import ride2 from "../data/netherlands/7660086787.json";
 
-const RideMap: FC = () => {
-  const mapEl = useRef<HTMLDivElement>(null);
-  mapboxgl.accessToken = MAPBOX_PUBLIC_KEY;
+interface Props {
+  rides: Streams[];
+}
 
-  useEffect(() => {
-    const zoomLevel = (height?: number) => {
-      switch (height) {
-        case 250:
-          return 6.8;
-        case 400:
-          return 7;
-        default:
-          return 7.25;
-      }
-    };
-
-    new mapboxgl.Map({
-      container: "map",
-      style: "mapbox://styles/mapbox/light-v10",
-      center: [4.902218907700037, 52.37208643243944],
-      zoom: zoomLevel(mapEl?.current?.offsetHeight),
-      minZoom: 6.8,
-    });
-  }, []);
-
-  return <div ref={mapEl} id="map" className={styles.map} />;
-};
-
-const Home: NextPage = () => {
+const Home: NextPage<Props> = ({ rides }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -53,7 +29,7 @@ const Home: NextPage = () => {
         </h1>
 
         <div className={styles.grid}>
-          <RideMap />
+          <RideMap rides={rides} />
         </div>
       </main>
 
@@ -71,6 +47,15 @@ const Home: NextPage = () => {
       </footer>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const rides = [ride1, ride2];
+  return {
+    props: {
+      rides,
+    },
+  };
 };
 
 export default Home;
