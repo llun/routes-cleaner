@@ -52,7 +52,9 @@ const Home: NextPage = () => {
           Welcome to <a href="#">Route Cleaner!</a>
         </h1>
 
-        <RideMap />
+        <div className={styles.grid}>
+          <RideMap />
+        </div>
       </main>
 
       <footer className={styles.footer}>
