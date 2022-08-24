@@ -1,33 +1,12 @@
 import mapboxgl, { GeoJSONSourceRaw, LineLayer } from "mapbox-gl";
 import React, { FC, useEffect, useRef } from "react";
+import { Streams } from "./map";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import styles from "../styles/Home.module.css";
 
 const MAPBOX_PUBLIC_KEY =
   "pk.eyJ1IjoibGx1biIsImEiOiJja2FqN2k2djIwNDU5MnlvNjR4YXRrMzFsIn0.Oir7SYHkVKBlgbPHldtRGQ";
-
-export type LatLng = [number, number];
-
-export interface LatLngStream {
-  data: LatLng[];
-  series_type: "distance";
-  original_size: number;
-  resolution: "low" | "medium" | "high";
-}
-
-export interface DistanceNumberStream {
-  data: number;
-  series_type: "distance";
-  original_size: number;
-  resolution: "low" | "medium" | "high";
-}
-
-export interface Streams {
-  latlng: LatLngStream;
-  distance: DistanceNumberStream;
-  altitude: DistanceNumberStream;
-}
 
 interface Props {
   rides: Streams[];
@@ -67,22 +46,11 @@ export const RideMap: FC<Props> = (props) => {
   mapboxgl.accessToken = MAPBOX_PUBLIC_KEY;
 
   useEffect(() => {
-    const zoomLevel = (height?: number) => {
-      switch (height) {
-        case 250:
-          return 6.8;
-        case 400:
-          return 7;
-        default:
-          return 7.25;
-      }
-    };
-
     const map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/light-v10",
       center: [4.902218907700037, 52.37208643243944],
-      zoom: zoomLevel(mapEl?.current?.offsetHeight),
+      zoom: 10,
       minZoom: 6.8,
     });
     map.on("load", async () => {

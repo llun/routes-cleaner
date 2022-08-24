@@ -1,8 +1,9 @@
+import React from "react";
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-
-import { RideMap, Streams } from "../libs/ride";
+import { Streams } from "../libs/map";
+import { RideMap } from "../libs/ride";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import styles from "../styles/Home.module.css";
