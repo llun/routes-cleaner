@@ -20,5 +20,7 @@ const ride2 = JSON.parse(
 const tree = new kdTree(getLineWithoutDuplicate(ride1), distance, ["x", "y"]);
 const line2 = getLineWithoutDuplicate(ride2);
 for (const c of line2) {
-  console.log(tree.nearest(c, 1));
+  const [nearest] = tree.nearest(c, 1);
+  const [c2, distance] = nearest;
+  console.log(`"${c.x},${c.y}","${c2.x},${c2.y}",${distance}`);
 }

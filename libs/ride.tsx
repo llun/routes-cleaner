@@ -12,21 +12,22 @@ interface Props {
   rides: Streams[];
 }
 
-const getGeoJSON = (streams: Streams): GeoJSONSourceRaw => ({
-  type: "geojson",
-  data: {
-    type: "Feature",
-    geometry: {
-      type: "LineString",
-      coordinates: streams.latlng.data.map(([x, y]) => [y, x]),
-    },
-    properties: {
-      name: "ride",
-    },
+const getGeoJSON = (
+  streams: Streams,
+  color: string
+): GeoJSON.Feature<GeoJSON.Geometry> => ({
+  type: "Feature",
+  geometry: {
+    type: "LineString",
+    coordinates: streams.latlng.data.map(([x, y]) => [y, x]),
+  },
+  properties: {
+    name: "ride",
+    color,
   },
 });
 
-const getLayer = (id: string, color: string): LineLayer => ({
+const getLayer = (id: string): LineLayer => ({
   id,
   type: "line",
   source: id,
@@ -35,7 +36,7 @@ const getLayer = (id: string, color: string): LineLayer => ({
     "line-cap": "round",
   },
   paint: {
-    "line-color": color,
+    "line-color": ["get", "color"],
     "line-width": 2,
   },
 });
@@ -54,10 +55,14 @@ export const RideMap: FC<Props> = (props) => {
       minZoom: 6.8,
     });
     map.on("load", async () => {
-      map.addSource("last-ride", getGeoJSON(rides[0]));
-      map.addSource("before-last-ride", getGeoJSON(rides[1]));
-      map.addLayer(getLayer("last-ride", "red"));
-      map.addLayer(getLayer("before-last-ride", "blue"));
+      map.addSource("ride", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [getGeoJSON(rides[0], "red"), getGeoJSON(rides[1], "blue")],
+        },
+      });
+      map.addLayer(getLayer("ride"));
     });
   });
 
