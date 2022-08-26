@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 
-interface Coordinate {
+export interface Coordinate {
   x: Decimal;
   y: Decimal;
 }

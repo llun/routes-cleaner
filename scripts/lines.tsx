@@ -2,7 +2,8 @@
 import { kdTree } from "kd-tree-javascript";
 import fs from "fs";
 import path from "path";
-import { distance, getLineWithoutDuplicate } from "../libs/map";
+import { Coordinate, distance, getLineWithoutDuplicate } from "../libs/map";
+import Decimal from "decimal.js";
 
 const ride1 = JSON.parse(
   fs.readFileSync(
@@ -17,10 +18,28 @@ const ride2 = JSON.parse(
   )
 );
 
-const tree = new kdTree(getLineWithoutDuplicate(ride1), distance, ["x", "y"]);
+const set = new Set();
+const tree = new kdTree([], distance, ["x", "y"]);
+const line1 = getLineWithoutDuplicate(ride1);
 const line2 = getLineWithoutDuplicate(ride2);
-for (const c of line2) {
-  const [nearest] = tree.nearest(c, 1);
-  const [c2, distance] = nearest;
-  console.log(`"${c.x},${c.y}","${c2.x},${c2.y}",${distance}`);
+
+const newLine = [] as Coordinate[];
+let skip = 0;
+for (const p of line1) {
+  const [nearest] = tree.nearest(p, 1);
+  if (!nearest) {
+    tree.insert(p);
+    newLine.push(p);
+    skip = 0;
+    continue;
+  }
+  const [, distance] = nearest;
+  if (new Decimal(distance).greaterThan(new Decimal(0.0001))) {
+    tree.insert(p);
+    newLine.push(p);
+    skip = 0;
+    continue;
+  }
+  skip++;
+  console.log(nearest, skip);
 }
