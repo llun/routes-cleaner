@@ -23,17 +23,11 @@ const tree = new kdTree([], distance, ["x", "y"]);
 const line1 = getLineWithoutDuplicate(ride1);
 const line2 = getLineWithoutDuplicate(ride2);
 
-const LINES_CACHE = "cache.line.json";
-let lines = [] as Coordinate[][];
-try {
-  fs.statSync(path.join(__dirname, LINES_CACHE));
-  lines = JSON.parse(
-    fs.readFileSync(path.join(__dirname, LINES_CACHE), "utf-8")
-  );
-} catch {
+function cleanLine(line: Coordinate[]) {
+  const lines = [] as Coordinate[][];
   let skip = 0;
   let currentLine = [] as Coordinate[];
-  for (const p of line1) {
+  for (const p of line) {
     const [nearest] = tree.nearest(p, 1);
     if (!nearest) {
       tree.insert(p);
@@ -50,8 +44,8 @@ try {
     }
     skip++;
     if (skip > 15 && currentLine.length) {
-      console.log(skip, currentLine.length);
       if (currentLine.length > 15) {
+        console.log(skip, currentLine.length);
         lines.push(currentLine);
       }
       currentLine = [];
@@ -61,8 +55,12 @@ try {
     console.log(currentLine.length);
     lines.push(currentLine);
   }
-  fs.writeFileSync(path.join(__dirname, LINES_CACHE), JSON.stringify(lines));
+  return lines;
 }
+
+const lines = [] as Coordinate[][];
+lines.push(...cleanLine(line1));
+lines.push(...cleanLine(line2));
 
 const colors = [
   "#ff9500",
@@ -93,7 +91,7 @@ const features = lines.map((line, index) => {
     },
     properties: {
       name: "ride",
-      color: colors[index],
+      color: colors[index] || colors[0],
     },
   };
 });
