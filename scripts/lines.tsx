@@ -18,7 +18,6 @@ const ride2 = JSON.parse(
   )
 );
 
-const set = new Set();
 const tree = new kdTree([], distance, ["x", "y"]);
 const line1 = getLineWithoutDuplicate(ride1);
 const line2 = getLineWithoutDuplicate(ride2);
