@@ -5,22 +5,15 @@ import path from "path";
 import { Coordinate, distance, getLineWithoutDuplicate } from "../libs/map";
 import Decimal from "decimal.js";
 
-const ride1 = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, "../data/netherlands/7648883160.json"),
-    "utf8"
-  )
-);
-const ride2 = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, "../data/netherlands/7660086787.json"),
-    "utf8"
-  )
-);
+const netherlands = fs
+  .readdirSync(path.join(__dirname, "../data/netherlands"))
+  .filter((item) => item.endsWith(".json"))
+  .map((fileName) => {
+    const filePath = path.join(__dirname, "../data/netherlands", fileName);
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  });
 
 const tree = new kdTree([], distance, ["x", "y"]);
-const line1 = getLineWithoutDuplicate(ride1);
-const line2 = getLineWithoutDuplicate(ride2);
 
 function cleanLine(line: Coordinate[]) {
   const lines = [] as Coordinate[][];
@@ -58,8 +51,9 @@ function cleanLine(line: Coordinate[]) {
 }
 
 const lines = [] as Coordinate[][];
-lines.push(...cleanLine(line1));
-lines.push(...cleanLine(line2));
+for (const ride of netherlands) {
+  lines.push(...cleanLine(getLineWithoutDuplicate(ride)));
+}
 
 const colors = [
   "#ff9500",
