@@ -1,9 +1,11 @@
-import mapboxgl, { GeoJSONSourceRaw, LineLayer } from "mapbox-gl";
+import mapboxgl, { LineLayer } from "mapbox-gl";
 import React, { FC, useEffect, useRef } from "react";
 import { Streams } from "./map";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import styles from "../styles/Home.module.css";
+
+import reduceJson from "../scripts/geojson.json";
 
 const MAPBOX_PUBLIC_KEY =
   "pk.eyJ1IjoibGx1biIsImEiOiJja2FqN2k2djIwNDU5MnlvNjR4YXRrMzFsIn0.Oir7SYHkVKBlgbPHldtRGQ";
@@ -62,7 +64,13 @@ export const RideMap: FC<Props> = (props) => {
           features: [getGeoJSON(rides[0], "red"), getGeoJSON(rides[1], "blue")],
         },
       });
+      map.addSource("reduce", {
+        type: "geojson",
+        data: reduceJson as any,
+      });
+      console.log(reduceJson);
       map.addLayer(getLayer("ride"));
+      map.addLayer(getLayer("reduce"));
     });
   });
 
