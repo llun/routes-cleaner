@@ -29,7 +29,7 @@ const getGeoJSON = (
   },
 });
 
-const getLayer = (id: string): LineLayer => ({
+const getLayer = (id: string, width: number = 2): LineLayer => ({
   id,
   type: "line",
   source: id,
@@ -39,7 +39,7 @@ const getLayer = (id: string): LineLayer => ({
   },
   paint: {
     "line-color": ["get", "color"],
-    "line-width": 2,
+    "line-width": width,
   },
 });
 
@@ -61,7 +61,7 @@ export const RideMap: FC<Props> = (props) => {
         type: "geojson",
         data: {
           type: "FeatureCollection",
-          features: [getGeoJSON(rides[0], "red"), getGeoJSON(rides[1], "blue")],
+          features: [getGeoJSON(rides[0], "red")],
         },
       });
       map.addSource("reduce", {
@@ -69,8 +69,8 @@ export const RideMap: FC<Props> = (props) => {
         data: reduceJson as any,
       });
       console.log(reduceJson);
-      map.addLayer(getLayer("ride"));
-      map.addLayer(getLayer("reduce"));
+      // map.addLayer(getLayer("ride"));
+      map.addLayer(getLayer("reduce", 4));
     });
   });
 

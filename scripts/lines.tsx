@@ -42,26 +42,43 @@ try {
       continue;
     }
     const [, distance] = nearest;
-    if (new Decimal(distance).greaterThan(new Decimal(0.0002))) {
+    if (new Decimal(distance).greaterThan(new Decimal(0.0001))) {
       tree.insert(p);
       currentLine.push(p);
       skip = 0;
       continue;
     }
     skip++;
-    if (skip > 30 && currentLine.length) {
+    if (skip > 15 && currentLine.length) {
       console.log(skip, currentLine.length);
-      lines.push(currentLine);
+      if (currentLine.length > 15) {
+        lines.push(currentLine);
+      }
       currentLine = [];
     }
   }
-  if (currentLine) {
+  if (currentLine.length) {
+    console.log(currentLine.length);
     lines.push(currentLine);
   }
   fs.writeFileSync(path.join(__dirname, LINES_CACHE), JSON.stringify(lines));
 }
 
-const colors = ["#275224", "#2dcf21", "#b7dbb4"];
+const colors = [
+  "#ff9500",
+  "#eaff00",
+  "#0dff00",
+  "#00ffb7",
+  "#00aeff",
+  "#0d00ff",
+  "#0d00ff",
+  "#e600ff",
+  "#948a03",
+  "#245c02",
+  "#025c59",
+  "#540314",
+  "#4a0a4a",
+];
 
 // Write geojson here
 const features = lines.map((line, index) => {
