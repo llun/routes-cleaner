@@ -5,15 +5,18 @@ import path from "path";
 import { Coordinate, distance, getLineWithoutDuplicate } from "../libs/map";
 import Decimal from "decimal.js";
 
-const netherlands = fs
-  .readdirSync(path.join(__dirname, "../data/netherlands"))
-  .filter((item) => item.endsWith(".json"))
-  .map((fileName) => {
-    const filePath = path.join(__dirname, "../data/netherlands", fileName);
-    return JSON.parse(fs.readFileSync(filePath, "utf8"));
-  });
-
 const tree = new kdTree([], distance, ["x", "y"]);
+
+function getCountry(country: "netherlands" | "singapore") {
+  const countryPath = path.join(__dirname, `../data/${country}`);
+  return fs
+    .readdirSync(countryPath)
+    .filter((item) => item.endsWith(".json"))
+    .map((fileName) => {
+      const filePath = path.join(countryPath, fileName);
+      return JSON.parse(fs.readFileSync(filePath, "utf8"));
+    });
+}
 
 function cleanLine(line: Coordinate[]) {
   const lines = [] as Coordinate[][];
@@ -50,8 +53,9 @@ function cleanLine(line: Coordinate[]) {
   return lines;
 }
 
+const country = getCountry("netherlands");
 const lines = [] as Coordinate[][];
-for (const ride of netherlands) {
+for (const ride of country) {
   lines.push(...cleanLine(getLineWithoutDuplicate(ride)));
 }
 
