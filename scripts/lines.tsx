@@ -14,7 +14,10 @@ function getCountry(country: "netherlands" | "singapore") {
     .filter((item) => item.endsWith(".json"))
     .map((fileName) => {
       const filePath = path.join(countryPath, fileName);
-      return JSON.parse(fs.readFileSync(filePath, "utf8"));
+      return {
+        ...JSON.parse(fs.readFileSync(filePath, "utf8")),
+        name: fileName,
+      };
     });
 }
 
@@ -53,9 +56,10 @@ function cleanLine(line: Coordinate[]) {
   return lines;
 }
 
-const country = getCountry("netherlands");
+const country = getCountry("singapore");
 const lines = [] as Coordinate[][];
 for (const ride of country) {
+  console.log(ride.name);
   lines.push(...cleanLine(getLineWithoutDuplicate(ride)));
 }
 
