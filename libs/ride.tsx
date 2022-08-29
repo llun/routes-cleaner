@@ -5,7 +5,7 @@ import { Streams } from "./map";
 import "mapbox-gl/dist/mapbox-gl.css";
 import styles from "../styles/Home.module.css";
 
-import reduceJson from "../scripts/geojson.json";
+import reduceJson from "../scripts/geojson.simplify.json";
 
 const MAPBOX_PUBLIC_KEY =
   "pk.eyJ1IjoibGx1biIsImEiOiJja2FqN2k2djIwNDU5MnlvNjR4YXRrMzFsIn0.Oir7SYHkVKBlgbPHldtRGQ";
@@ -29,7 +29,11 @@ const getGeoJSON = (
   },
 });
 
-const getLayer = (id: string, width: number = 2): LineLayer => ({
+const getLayer = (
+  id: string,
+  width: number = 2,
+  overrideColor?: string
+): LineLayer => ({
   id,
   type: "line",
   source: id,
@@ -38,7 +42,7 @@ const getLayer = (id: string, width: number = 2): LineLayer => ({
     "line-cap": "round",
   },
   paint: {
-    "line-color": ["get", "color"],
+    "line-color": overrideColor ?? ["get", "color"],
     "line-width": width,
   },
 });
@@ -70,7 +74,7 @@ export const RideMap: FC<Props> = (props) => {
       });
       console.log(reduceJson);
       // map.addLayer(getLayer("ride"));
-      map.addLayer(getLayer("reduce", 4));
+      map.addLayer(getLayer("reduce", 4, "red"));
     });
   });
 
